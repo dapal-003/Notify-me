@@ -1,37 +1,61 @@
-import { Injector, Logger, common, settings, webpack } from "replugged";
-import { channelInterface, messageCreate, settingsInterface, userInterface } from "./interfaces";
+import { Injector, Logger, common, settings, types, webpack } from "replugged";
+import {
+  channelInterface,
+  channelModInterface,
+  getBlockedInterface,
+  getChannelIdModuleInterface,
+  getCurrentSidebarChannelIdModuleInterface,
+  getGuildIdModuleInterface,
+  getStatusModuleInterface,
+  getVoiceChannelIdModuleInterface,
+  isMutedModuleInterface,
+  messageCreate,
+  settingsInterface,
+  userInterface,
+  userModuleInterface,
+  userSettingsModuleInterface,
+} from "./interfaces";
 import settingsScreen from "./settings";
 const inject = new Injector();
 const logger = Logger.plugin("NotifyMe");
 let onMessageRecive: (e: messageCreate) => void;
 
-const channelModule = await webpack.waitForModule(
+const channelModule = (await webpack.waitForModule(
   webpack.filters.byProps("getChannel", "getBasicChannel"),
-);
-const userModule = await webpack.waitForModule(
+)) as unknown as channelModInterface;
+const userModule = (await webpack.waitForModule(
   webpack.filters.byProps("getCurrentUser", "getUser"),
-);
-const getChannelIdModule = await webpack.waitForProps("getChannelId", "getVoiceChannelId");
-const getGuildIdModule = await webpack.waitForModule(
+)) as unknown as userModuleInterface;
+const getChannelIdModule = (await webpack.waitForProps(
+  "getChannelId",
+  "getVoiceChannelId",
+)) as unknown as getChannelIdModuleInterface;
+const getGuildIdModule = (await webpack.waitForModule(
   webpack.filters.byProps("getGuildId", "getLastSelectedGuildId"),
-);
-const getCurrentSidebarChannelIdModule = await webpack.waitForProps("getCurrentSidebarChannelId");
-const getVoiceChannelIdModule = await webpack.waitForModule(
+)) as unknown as getGuildIdModuleInterface;
+const getCurrentSidebarChannelIdModule = (await webpack.waitForProps(
+  "getCurrentSidebarChannelId",
+)) as unknown as getCurrentSidebarChannelIdModuleInterface;
+const getVoiceChannelIdModule = (await webpack.waitForModule(
   webpack.filters.byProps("getChannelId", "getAveragePing"),
-);
+)) as unknown as getVoiceChannelIdModuleInterface;
 const isLurkingModule = await webpack.waitForModule(webpack.filters.byProps("isLurking"));
-const isBlockedModule = await webpack.waitForModule(webpack.filters.byProps("isBlocked"));
-const isMutedModule = await webpack.waitForModule(webpack.filters.byProps("isMuted", "hasJoined"));
-const getStatusModule = await webpack.waitForModule(
+const isBlockedModule = (await webpack.waitForModule(
+  webpack.filters.byProps("isBlocked"),
+)) as unknown as getBlockedInterface;
+const isMutedModule = (await webpack.waitForModule(
+  webpack.filters.byProps("isMuted", "hasJoined"),
+)) as unknown as isMutedModuleInterface;
+const getStatusModule = (await webpack.waitForModule(
   webpack.filters.byProps("getStatus", "getActivities"),
-);
-const userSettingsModule = await webpack.waitForModule(
+)) as unknown as getStatusModuleInterface;
+const userSettingsModule = (await webpack.waitForModule(
   webpack.filters.byProps(
     "allowAllMessages",
     "isSuppressEveryoneEnabled",
     "isSuppressRolesEnabled",
   ),
-);
+)) as unknown as userSettingsModuleInterface;
 // Crashes plugin
 // const UserFlagsModule: any = await webpack.waitForModule(webpack.filters.byProps("UserFlags"));
 // crashes plugin
@@ -95,7 +119,7 @@ for (const [key, value] of Object.entries(defaultSettings)) {
     cfg.set(key as never, value as never);
   }
 }
-logger.log(cfg.all());
+//logger.log(cfg.all());
 export async function start(): Promise<void> {
   common.fluxDispatcher.subscribe("MESSAGE_CREATE", onMessageRecive as never);
 }
@@ -148,7 +172,6 @@ export function containsKeyword(messageEvent: messageCreate, keywords: string): 
     if (keyword === "") {
       continue;
     }
-    //logger.log(keyword);
 
     if (!keywordDetection) {
       if (content.match(`(^|[\\s/?.,'":()\\-_\\*!\`])${keyword}([\\s/?.,'":()\\-_\\*!\`]|$)`)) {
@@ -205,15 +228,15 @@ export function handleNotification(
   lostFocus = lostFocus ?? true;
   r = r ?? false;
 
-  let channel = channelModule.getChannel(channelId);
+  let channel = channelModule.getChannel(channelId) as channelInterface;
   // handle thread creation
   if (messagePackage.type === "THREAD_STARTER_MESSAGES") {
-    channel = channelModule.getChannel(channel?.parent_id);
+    channel = channelModule.getChannel(channel?.parent_id) as channelInterface;
   }
   // ------
   // handle current user
-  const currentUser = userModule.getCurrentUser();
-  const messageAuthor = userModule.getUser(messagePackage.message.author.id);
+  const currentUser = userModule.getCurrentUser() as userInterface;
+  const messageAuthor = userModule.getUser(messagePackage.message.author.id) as userInterface;
   // If the channel, current user, or message author aren't found then don't notify
   if (channel === null || currentUser === null || messageAuthor === null) {
     logger.log("Can't find first");
@@ -319,6 +342,6 @@ export function handleNotification(
 
 export function stop(): void {
   inject.uninjectAll();
-  common.fluxDispatcher.unsubscribe("MESSAGE_CREATE", onMessageRecive as any);
+  common.fluxDispatcher.unsubscribe("MESSAGE_CREATE", onMessageRecive as types.AnyFunction);
 }
 export { cfg, settingsScreen as Settings };

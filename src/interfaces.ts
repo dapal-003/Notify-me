@@ -1,17 +1,18 @@
+import { types } from "replugged";
 export interface messageObj {
   attachments: Array<attachment>;
   author: author;
   channel_id: string;
-  components: any[];
+  components: object[];
   content: string;
   edited_timestamp: string;
-  embeds: any[];
+  embeds: object[];
   flags: number;
   guild_id: string;
   id: string;
   member: member;
   mention_everyone: boolean;
-  mention_roles: any[];
+  mention_roles: object[];
   mentions: Array<author>;
   nonce: string;
   pinned: boolean;
@@ -20,20 +21,18 @@ export interface messageObj {
   tts: boolean;
   type: number;
 }
-
 export interface author {
   avatar: string;
-  avatarDecoration: any;
+  avatarDecoration: undefined | string;
   discriminator: string;
-  display_name: any;
+  display_name: string;
   id: string;
   publicFlags: number;
   username: string;
 }
-
 export interface member {
   avatar: string;
-  communication_disabled_until: any;
+  communication_disabled_until: undefined | string;
   deaf: boolean;
   flags: number;
   joined_at: string;
@@ -41,9 +40,8 @@ export interface member {
   nick: string;
   pending: boolean;
   premium_since: string;
-  roles: Array<string>;
+  roles: string[];
 }
-
 export interface attachment {
   content_type: string;
   filename: string;
@@ -54,7 +52,6 @@ export interface attachment {
   url: string;
   width: number;
 }
-
 export interface settingsInterface {
   notifyGuilds?: string;
   notifyChannels?: string;
@@ -78,7 +75,6 @@ export interface settingsInterface {
   lurkedGuilds?: boolean; //false
   managedChannels?: boolean; //false
 }
-
 export interface messageCreate {
   channelId: string;
   guildId: string;
@@ -87,64 +83,217 @@ export interface messageCreate {
   optimistic: boolean;
   type: string;
 }
-
 export interface userInterface {
   avatar: string;
-  avatarDecoration: any;
+  avatarDecoration: undefined | string;
   bot: boolean;
   desktop: boolean;
   discriminator: string;
-  email: string;
+  email: null | string;
   flags: number;
-  guildMemberAvatars: any;
-  hasAnyStaffLevel: any;
+  guildMemberAvatars: {
+    [key: number]: string;
+  };
+  hasAnyStaffLevel?: undefined | string;
   hasBouncedEmail: boolean;
-  hasFlag: any;
+  hasFlag: types.AnyFunction;
   id: string;
-  isStaff: any;
-  isStaffPersonal: any;
+  isStaff: types.AnyFunction;
+  isStaffPersonal: types.AnyFunction;
   mfaEnabled: boolean;
   mobile: boolean;
-  nsfwAllowed: any;
-  personalConnectionId: any;
-  phone: any;
-  premiumType: any;
+  nsfwAllowed: undefined | boolean;
+  personalConnectionId: null | string;
+  phone: null | string;
+  premiumType: undefined | number;
   premiumUsageFlags: number;
   publicFlags: number;
   purchasedFlags: number;
   system: boolean;
   username: string;
   verified: boolean;
-  createdAt: any;
+  createdAt: Date;
   tag: string;
 }
-
 export interface channelInterface {
-  application_id: any;
-  defaultAutoArchiveDuration: any;
-  defaultThreadRateLimitPerUser: any;
+  application_id: undefined | string;
+  defaultAutoArchiveDuration: undefined | string;
+  defaultThreadRateLimitPerUser: undefined | string;
   flags_: number;
   guild_id: string;
   id: string;
   lastMessageId: string;
   lastPinTimestamp: string;
-  memberListId: any;
+  memberListId: undefined | string;
   name: string;
   nsfw_: boolean;
   parent_id: string;
-  permissionOverwrites_: any;
+  permissionOverwrites_: undefined | string;
   position_: number;
   rateLimitPerUser_: number;
   topic_: string;
   type: number;
-  version: any;
-  accessPermissions: any;
+  version: undefined | string;
+  accessPermissions: undefined | string;
   bitrate: number;
   flags: number;
   nsfw: boolean;
-  permissionOverwrites: any;
+  permissionOverwrites: undefined | string;
   position: number;
   rateLimitPerUser: number;
   topic: string;
   userLimit: number;
+}
+export interface getBlockedInterface {
+  getFriendIDs: types.AnyFunction;
+  getNickname: types.AnyFunction;
+  getPendingCount: types.AnyFunction;
+  getRelationshipCount: types.AnyFunction;
+  getRelationshipType: types.AnyFunction;
+  getRelationships: types.AnyFunction;
+  getSince: types.AnyFunction;
+  getSinces: types.AnyFunction;
+  initialize: types.AnyFunction;
+  isBlocked: types.AnyFunction;
+  isFriend: types.AnyFunction;
+}
+export interface channelModInterface {
+  getAllThreadsForParent: types.AnyFunction;
+  getBasicChannel: types.AnyFunction;
+  getCachedChannelJsonForGuild: types.AnyFunction;
+  getChannel: types.AnyFunction;
+  getDMFromUserId: types.AnyFunction;
+  getDMUserIds: types.AnyFunction;
+  getGuildChannelsVersion: types.AnyFunction;
+  getInitialOverlayState: types.AnyFunction;
+  getMutableBasicGuildChannelsForGuild: types.AnyFunction;
+  getMutableGuildChannelsForGuild: types.AnyFunction;
+  getMutablePrivateChannels: types.AnyFunction;
+  getPrivateChannelsVersion: types.AnyFunction;
+  getSortedPrivateChannels: types.AnyFunction;
+  hasChannel: types.AnyFunction;
+  hasRestoredGuild: types.AnyFunction;
+  initialize: types.AnyFunction;
+  loadAllGuildAndPrivateChannelsFromDisk: types.AnyFunction;
+}
+export interface userModuleInterface {
+  filter: types.AnyFunction;
+  findByTag: types.AnyFunction;
+  forEach: types.AnyFunction;
+  getCurrentUser: types.AnyFunction;
+  getUser: types.AnyFunction;
+  getUsers: types.AnyFunction;
+  initialize: types.AnyFunction;
+}
+export interface getChannelIdModuleInterface {
+  getChannelId: types.AnyFunction;
+  getCurrentlySelectedChannelId: types.AnyFunction;
+  getLastChannelFollowingDestination: types.AnyFunction;
+  getLastSelectedChannelId: types.AnyFunction;
+  getLastSelectedChannels: types.AnyFunction;
+  getMostRecentSelectedTextChannelId: types.AnyFunction;
+  getVoiceChannelId: types.AnyFunction;
+  initialize: types.AnyFunction;
+}
+export interface getGuildIdModuleInterface {
+  getGuildId: types.AnyFunction;
+  getLastSelectedGuildId: types.AnyFunction;
+  getLastSelectedTimestamp: types.AnyFunction;
+  getState: types.AnyFunction;
+  getTabsV2SelectedGuildId: types.AnyFunction;
+  initialize: types.AnyFunction;
+}
+export interface getCurrentSidebarChannelIdModuleInterface {
+  getCurrentSidebarChannelId: types.AnyFunction;
+  getCurrentSidebarMessageId: types.AnyFunction;
+  getSection: types.AnyFunction;
+  getSidebarState: types.AnyFunction;
+  getState: types.AnyFunction;
+  initialize: types.AnyFunction;
+}
+export interface getVoiceChannelIdModuleInterface {
+  getAveragePing: types.AnyFunction;
+  getChannelId: types.AnyFunction;
+  getDuration: types.AnyFunction;
+  getGuildId: types.AnyFunction;
+  getHostname: types.AnyFunction;
+  getLastPing: types.AnyFunction;
+  getMediaSessionId: types.AnyFunction;
+  getOutboundLossRate: types.AnyFunction;
+  getPacketStats: types.AnyFunction;
+  getPings: types.AnyFunction;
+  getQuality: types.AnyFunction;
+  getRTCConnection: types.AnyFunction;
+  getRTCConnectionId: types.AnyFunction;
+  getRemoteDisconnectVoiceChannelId: types.AnyFunction;
+  getState: types.AnyFunction;
+  getVoiceStateStats: types.AnyFunction;
+  getWasEverMultiParticipant: types.AnyFunction;
+  getWasEverRtcConnected: types.AnyFunction;
+  initialize: types.AnyFunction;
+  isConnected: types.AnyFunction;
+  isDisconnected: types.AnyFunction;
+}
+export interface isMutedModuleInterface {
+  flags: types.AnyFunction;
+  getInitialOverlayState: types.AnyFunction;
+  getMuteConfig: types.AnyFunction;
+  getMutedThreads: types.AnyFunction;
+  hasJoined: types.AnyFunction;
+  isMuted: types.AnyFunction;
+  joinTimestamp: types.AnyFunction;
+}
+export interface getStatusModuleInterface {
+  findActivity: types.AnyFunction;
+  getActivities: types.AnyFunction;
+  getActivityMetadata: types.AnyFunction;
+  getAllApplicationActivities: types.AnyFunction;
+  getApplicationActivity: types.AnyFunction;
+  getPrimaryActivity: types.AnyFunction;
+  getState: types.AnyFunction;
+  getStatus: types.AnyFunction;
+  getUserIds: types.AnyFunction;
+  initialize: types.AnyFunction;
+  isMobileOnline: types.AnyFunction;
+  setCurrentUserOnConnectionOpen: types.AnyFunction;
+}
+export interface userSettingsModuleInterface {
+  allowAllMessages: types.AnyFunction;
+  allowNoMessages: types.AnyFunction;
+  getAllSettings: types.AnyFunction;
+  getChannelFlags: types.AnyFunction;
+  getChannelMessageNotifications: types.AnyFunction;
+  getChannelMuteConfig: types.AnyFunction;
+  getChannelOverrides: types.AnyFunction;
+  getChannelUnreadSetting: types.AnyFunction;
+  getGuildChannelFlags: types.AnyFunction;
+  getGuildFavorites: types.AnyFunction;
+  getGuildFlags: types.AnyFunction;
+  getMessageNotifications: types.AnyFunction;
+  getMuteConfig: types.AnyFunction;
+  getMutedChannels: types.AnyFunction;
+  getNewForumThreadsCreated: types.AnyFunction;
+  getNotifyHighlights: types.AnyFunction;
+  getOptedInChannels: types.AnyFunction;
+  getOptedInChannelsWithPendingUpdates: types.AnyFunction;
+  getPendingChannelUpdates: types.AnyFunction;
+  getState: types.AnyFunction;
+  initialize: types.AnyFunction;
+  isCategoryMuted: types.AnyFunction;
+  isChannelMuted: types.AnyFunction;
+  isChannelOptedIn: types.AnyFunction;
+  isChannelOrParentOptedIn: types.AnyFunction;
+  isChannelRecordOrParentOptedIn: types.AnyFunction;
+  isChannelRelevant: types.AnyFunction;
+  isFavorite: types.AnyFunction;
+  isGuildCollapsed: types.AnyFunction;
+  isGuildOrCategoryOrChannelMuted: types.AnyFunction;
+  isGuildUnreadSettingEnabled: types.AnyFunction;
+  isMobilePushEnabled: types.AnyFunction;
+  isMuteScheduledEventsEnabled: types.AnyFunction;
+  isMuted: types.AnyFunction;
+  isOptInEnabled: types.AnyFunction;
+  isSuppressEveryoneEnabled: types.AnyFunction;
+  isSuppressRolesEnabled: types.AnyFunction;
+  resolvedMessageNotifications: types.AnyFunction;
 }
