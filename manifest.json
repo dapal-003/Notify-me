@@ -1,16 +1,16 @@
 {
-  "id": "dev.replugged.PluginTemplate",
-  "name": "Plugin Template",
-  "description": "A plugin template",
+  "id": "dev.Dapal.NotifyMe",
+  "name": "NotifyMe",
+  "description": "An attempt at cloning Cutecord",
   "author": {
-    "name": "replugged",
-    "discordID": "1000992611840049192",
-    "github": "replugged-org"
+    "name": "Dapal",
+    "discordID": "787438421609152522",
+    "github": "dapal-003"
   },
   "version": "1.0.0",
   "updater": {
     "type": "github",
-    "id": "replugged-org/plugin-template"
+    "id": "dapal-003/NotifyMe"
   },
   "license": "MIT",
   "type": "replugged-plugin",
