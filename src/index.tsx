@@ -15,8 +15,8 @@ import {
 import { showNotification } from "./notification";
 import settingsScreen from "./settings";
 const inject = new Injector();
-const logger = Logger.plugin("NotifyMe");
-let onMessageRecive: (e: messageCreate) => void;
+export const logger = Logger.plugin("NotifyMe");
+let onMessageReceive: (e: messageCreate) => void;
 
 export const channelModule = (await webpack.waitForModule(
   webpack.filters.byProps("getChannel", "getBasicChannel"),
@@ -75,10 +75,10 @@ for (const [key, value] of Object.entries(defaultSettings)) {
   }
 }
 export async function start(): Promise<void> {
-  common.fluxDispatcher.subscribe("MESSAGE_CREATE", onMessageRecive as never);
+  await common.fluxDispatcher.subscribe("MESSAGE_CREATE", onMessageReceive as never);
 }
 
-onMessageRecive = (e) => {
+onMessageReceive = (e) => {
   try {
     if (handleNotification(e, false, false)) {
       logger.log("Spawn notification:");
@@ -147,7 +147,7 @@ export function containsKeyword(messageEvent: messageCreate, keywords: string[])
  * @param {String[]} keywords Keywords to search for within the message
  * @returns {Boolean} Does the message contain a keyword?
  */
-export function getActivicationKeyword(message: messageObj, keywords: string[]): string {
+export function getActivationKeyword(message: messageObj, keywords: string[]): string {
   let { content } = message;
   if (!content) return "Something went wrong, please report to the developer";
   const keywordDetection = cfg.get("method"); // keyword
@@ -187,7 +187,7 @@ export function shouldNotifyBase(
     // future proofing, will need it later probably and wanted to get rid of the error
   }
   if (!messageAuthor.hasFlag(0)) {
-    // Can't get the proper type here. From what I see flag 0 is the default flag, everyone has it, don't know if sammers do not have it.
+    // Can't get the proper type here. From what I see flag 0 is the default flag, everyone has it, don't know if spammers do not have it.
     logger.log("has flag other than default");
     return false;
   }
@@ -351,7 +351,7 @@ export function getActivator(messagePackage: messageObj): string {
   } else if (notifyUsers.includes(messagePackage.author.id)) {
     text = `Notification from watched user: ${messagePackage.author.username}#${messagePackage.author.discriminator} (${messagePackage.author.id})`;
   } else {
-    text = `Notification from watched keyword: ${getActivicationKeyword(
+    text = `Notification from watched keyword: ${getActivationKeyword(
       messagePackage,
       notifyKeywords,
     )}`;
@@ -361,7 +361,7 @@ export function getActivator(messagePackage: messageObj): string {
 
 export function stop(): void {
   inject.uninjectAll();
-  common.fluxDispatcher.unsubscribe("MESSAGE_CREATE", onMessageRecive as types.AnyFunction);
+  common.fluxDispatcher.unsubscribe("MESSAGE_CREATE", onMessageReceive as types.AnyFunction);
 }
 
 export { cfg, settingsScreen as Settings };

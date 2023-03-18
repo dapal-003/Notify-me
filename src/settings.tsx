@@ -78,11 +78,11 @@ export default (): React.ReactElement => {
           Use substring matches.
         </SwitchItem>
         <SwitchItem {...caseSensitive} note="Makes the keyword `kat` match both `KAT` and `kat`">
-          Make keywords case sensetive.
+          Make keywords case sensitive.
         </SwitchItem>
         <SwitchItem
           {...highlightKeywords}
-          note="Dissabling this will make this addon appear more stealthy as there won't be highlights for notificatiosn that don't normally exist.">
+          note="Disabling this will make this addon appear more stealthy as there won't be highlights for notifications that don't normally exist.">
           Highlight messages with keywords
         </SwitchItem>
       </Category>

@@ -27,11 +27,11 @@ export class Queue {
    * @param maxSize The maximum amount of functions that can be queued at once.
    *                If the queue is full, the oldest function will be removed.
    */
-  constructor(public readonly maxSize = Infinity) {}
+  public constructor(public readonly maxSize = Infinity) {}
 
   private queue = [] as Array<() => Promisable<unknown>>;
 
-  private promise?: Promise<any>;
+  private promise?: Promise<unknown>;
 
   private next(): void {
     const func = this.queue.shift();
@@ -39,6 +39,7 @@ export class Queue {
       this.promise = Promise.resolve()
         .then(func)
         .finally(() => this.next());
+    // eslint-disable-next-line no-undefined
     else this.promise = undefined;
   }
 
@@ -51,7 +52,7 @@ export class Queue {
    * If the queue exceeds the specified maxSize, the first task in queue will be removed.
    * @param func Task
    */
-  push<T>(func: () => Promisable<T>): void {
+  public push<T>(func: () => Promisable<T>): void {
     if (this.size >= this.maxSize) this.queue.shift();
 
     this.queue.push(func);
@@ -63,7 +64,7 @@ export class Queue {
    * If the queue exceeds the specified maxSize, the last task in queue will be removed.
    * @param func Task
    */
-  unshift<T>(func: () => Promisable<T>): void {
+  public unshift<T>(func: () => Promisable<T>): void {
     if (this.size >= this.maxSize) this.queue.pop();
 
     this.queue.unshift(func);
@@ -73,14 +74,14 @@ export class Queue {
   /**
    * The amount of tasks in the queue
    */
-  get size(): number {
+  public get size(): number {
     return this.queue.length;
   }
 
   /**
    *Remove all elements from the queue
    */
-  flush(): void {
+  public flush(): void {
     this.queue.length = 0;
   }
 }

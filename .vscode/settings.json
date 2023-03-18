@@ -1,4 +1,15 @@
 {
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "cSpell.words": [
+    "codepaths",
+    "IPCAS",
+    "kitkat",
+    "Promisable",
+    "replugged",
+    "Sinces",
+    "tsbuildinfo",
+    "uninject",
+    "Vendicated"
+  ]
 }

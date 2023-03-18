@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { types } from "replugged";
 export interface messageObj {
-  attachments: Array<attachment>;
+  attachments: attachment[];
   author: author;
   channel_id: string;
   components: object[];
@@ -13,10 +14,10 @@ export interface messageObj {
   member: member;
   mention_everyone: boolean;
   mention_roles: object[];
-  mentions: Array<author>;
+  mentions: author[];
   nonce: string;
   pinned: boolean;
-  referenced_message: refferenceMessage;
+  referenced_message: referenceMessage;
   message_reference: messageReference;
   timestamp: string;
   tts: boolean;
@@ -29,8 +30,8 @@ interface messageReference {
   message_id: string;
 }
 
-export interface refferenceMessage {
-  attachments: Array<attachment>;
+export interface referenceMessage {
+  attachments: attachment[];
   author: author;
   channel_id: string;
   components: [];

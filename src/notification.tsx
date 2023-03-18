@@ -52,5 +52,5 @@ function _flusQueue(): void {
 }
 
 export async function showNotification(data: NotificationInterface) {
-  NotificationQueue.push(() => _showNotification(data));
+  await NotificationQueue.push(() => _showNotification(data));
 }
