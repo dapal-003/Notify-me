@@ -6,21 +6,19 @@ import {
   getChannelIdModuleInterface,
   getCurrentSidebarChannelIdModuleInterface,
   getGuildIdModuleInterface,
-  getStatusModuleInterface,
-  getVoiceChannelIdModuleInterface,
-  isMutedModuleInterface,
   messageCreate,
+  messageObj,
   settingsInterface,
   userInterface,
   userModuleInterface,
-  userSettingsModuleInterface,
 } from "./interfaces";
+import { showNotification } from "./notification";
 import settingsScreen from "./settings";
 const inject = new Injector();
 const logger = Logger.plugin("NotifyMe");
 let onMessageRecive: (e: messageCreate) => void;
 
-const channelModule = (await webpack.waitForModule(
+export const channelModule = (await webpack.waitForModule(
   webpack.filters.byProps("getChannel", "getBasicChannel"),
 )) as unknown as channelModInterface;
 const userModule = (await webpack.waitForModule(
@@ -36,58 +34,16 @@ const getGuildIdModule = (await webpack.waitForModule(
 const getCurrentSidebarChannelIdModule = (await webpack.waitForProps(
   "getCurrentSidebarChannelId",
 )) as unknown as getCurrentSidebarChannelIdModuleInterface;
-const getVoiceChannelIdModule = (await webpack.waitForModule(
-  webpack.filters.byProps("getChannelId", "getAveragePing"),
-)) as unknown as getVoiceChannelIdModuleInterface;
-const isLurkingModule = await webpack.waitForModule(webpack.filters.byProps("isLurking"));
 const isBlockedModule = (await webpack.waitForModule(
   webpack.filters.byProps("isBlocked"),
 )) as unknown as getBlockedInterface;
-const isMutedModule = (await webpack.waitForModule(
-  webpack.filters.byProps("isMuted", "hasJoined"),
-)) as unknown as isMutedModuleInterface;
-const getStatusModule = (await webpack.waitForModule(
-  webpack.filters.byProps("getStatus", "getActivities"),
-)) as unknown as getStatusModuleInterface;
-const userSettingsModule = (await webpack.waitForModule(
-  webpack.filters.byProps(
-    "allowAllMessages",
-    "isSuppressEveryoneEnabled",
-    "isSuppressRolesEnabled",
-  ),
-)) as unknown as userSettingsModuleInterface;
-// Crashes plugin
-// const UserFlagsModule: any = await webpack.waitForModule(webpack.filters.byProps("UserFlags"));
-// crashes plugin
-// try {
-// const UserFlagsModule: any = webpack.getByProps(["publicFlags"], { all: true });
-// logger.log(UserFlagsModule);
-// } catch (error) {
-//   logger.log(error);
-// }
-// crashes plugin
-// const MessageTypesModule: any = await webpack.waitForModule(
-//   webpack.filters.byProps("MessageTypes", "UploadTypes"),
-// );
-//   logger.log(MessageTypesModule);
-//crashes plugin
-// const getChannelTypesModule: any = await webpack.waitForModule(
-//   webpack.filters.byProps("THREAD_CHANNEL_TYPES", "GUILD_VOCAL_CHANNEL_TYPES"),
-// );
-//crashes plugin
-// const computeThreadNotificationSettingModule: any = await webpack.waitForModule(
-//   webpack.filters.byProps("computeThreadNotificationSetting"),
-// );
-//crashes plugin
-// const ThreadMemberFlagsModule: any = await webpack.waitForModule(
-//   webpack.filters.byProps("ThreadMemberFlags"),
-// );
-//Crashes plugin
-// const mentionedModule: any = webpack.getBySource(".channel_id,mentionEveryone:", { all: true });
-// logger.log(mentionedModule);
-// const functionInModule = webpack.getFunctionBySource(mentionedModule, "rawMessage");
-// logger.log(functionInModule);
-
+export const transitionModule = webpack.getBySource(
+  "Routing/Utils",
+) as unknown as types.ObjectExports;
+logger.log(transitionModule);
+export const transitionTo = webpack.getFunctionBySource(transitionModule, "if") as unknown as (
+  destination: string,
+) => {};
 const defaultSettings: Partial<settingsInterface> = {
   notifyGuilds: '"[""]"',
   notifyChannels: '"[""]"',
@@ -101,14 +57,14 @@ const defaultSettings: Partial<settingsInterface> = {
   statusOverride: true, //true
 
   method: true,
-  caseSensitive: false, //false
-  highlightKeywords: true, // true
+  caseSensitive: false,
+  highlightKeywords: true,
 
-  mentionEveryone: true, //true
-  mentionRoles: true, // true
+  mentionEveryone: true,
+  mentionRoles: true,
 
-  lurkedGuilds: false, //false
-  managedChannels: false, //false
+  lurkedGuilds: false,
+  managedChannels: false,
 };
 
 const cfg = await settings.init<settingsInterface>("dev.Dapal.NotifyMe");
@@ -119,7 +75,6 @@ for (const [key, value] of Object.entries(defaultSettings)) {
     cfg.set(key as never, value as never);
   }
 }
-//logger.log(cfg.all());
 export async function start(): Promise<void> {
   common.fluxDispatcher.subscribe("MESSAGE_CREATE", onMessageRecive as never);
 }
@@ -129,21 +84,23 @@ onMessageRecive = (e) => {
     if (handleNotification(e, false, false)) {
       logger.log("Spawn notification:");
       logger.log(e);
-      if (!e.message.content) {
-        common.toast.toast(
-          `${e.message.author.display_name ?? e.message.author.username} uploaded: ${
-            e.message.content
-          }`,
-          common.toast.Kind.MESSAGE,
-        );
-      } else {
-        common.toast.toast(
-          `${e.message.author.display_name ?? e.message.author.username} Said: ${
-            e.message.content
-          }`,
-          common.toast.Kind.MESSAGE,
-        );
-      }
+      let key = Math.floor(Math.random() * 99999);
+      showNotification({ key, messageObject: e.message });
+      // if (!e.message.content) {
+      //   common.toast.toast(
+      //     `${e.message.author.display_name ?? e.message.author.username} uploaded: ${
+      //       e.message.content
+      //     }`,
+      //     common.toast.Kind.MESSAGE,
+      //   );
+      // } else {
+      //   common.toast.toast(
+      //     `${e.message.author.display_name ?? e.message.author.username} Said: ${
+      //       e.message.content
+      //     }`,
+      //     common.toast.Kind.MESSAGE,
+      //   );
+      // }
     }
   } catch (error) {
     console.log(error);
@@ -185,6 +142,39 @@ export function containsKeyword(messageEvent: messageCreate, keywords: string): 
   return false;
 }
 
+/**
+ * Returns the keyword that activated the notification.
+ * @param {messageObj} msg The message to check for keywords
+ * @param {String[]} keywords Keywords to search for within the message
+ * @returns {Boolean} Does the message contain a keyword?
+ */
+export function getActivicationKeyword(message: messageObj, keywords: string): string {
+  let { content } = message;
+  if (!content) return "Something went wrong, please report to the developer";
+  const keywordDetection = cfg.get("method"); // keyword
+  const caseSensitive = cfg.get("caseSensitive");
+  const keywordsObject = JSON.parse(keywords);
+  if (!caseSensitive) {
+    content = content.toLowerCase();
+    keywords = keywordsObject.map((keyword: string) => keyword.toLowerCase());
+  }
+  for (const keyword of keywordsObject) {
+    if (keyword === "") {
+      continue;
+    }
+
+    if (!keywordDetection) {
+      if (content.match(`(^|[\\s/?.,'":()\\-_\\*!\`])${keyword}([\\s/?.,'":()\\-_\\*!\`]|$)`)) {
+        return keyword;
+      }
+    } else if (content.includes(keyword)) {
+      return keyword;
+    }
+  }
+
+  return "Something went wrong, please report to the developer";
+}
+
 export function shouldNotifyBase(
   currentUser: userInterface,
   messageAuthor: userInterface,
@@ -195,7 +185,9 @@ export function shouldNotifyBase(
   //Set variable defaults
   r = r ?? false;
   o = o ?? false;
-  //logger.log(messageAuthor);
+  if (o) {
+    // future proofing, will need it later probably and wanted to get rid of the error
+  }
   if (!messageAuthor.hasFlag(0)) {
     // Can't get the proper type here. From what I see flag 0 is the default flag, everyone has it, don't know if sammers do not have it.
     logger.log("has flag other than default");
@@ -238,7 +230,7 @@ export function handleNotification(
   const currentUser = userModule.getCurrentUser() as userInterface;
   const messageAuthor = userModule.getUser(messagePackage.message.author.id) as userInterface;
   // If the channel, current user, or message author aren't found then don't notify
-  if (channel === null || currentUser === null || messageAuthor === null) {
+  if (channel == null || currentUser == null || messageAuthor == null) {
     logger.log("Can't find first");
     return false;
   }
@@ -309,6 +301,8 @@ export function handleNotification(
     return true;
   }
 
+  // override stuff and base notification deals
+
   // if (!currentOverride) {
   //   return false;
   // } else {
@@ -340,8 +334,36 @@ export function handleNotification(
   return false;
 }
 
+export function getActivator(messagePackage: messageObj): string {
+  const notifyGuilds = JSON.parse(cfg.get("notifyGuilds"));
+  const notifyChannels = JSON.parse(cfg.get("notifyChannels"));
+  const notifyUsers = JSON.parse(cfg.get("notifyUsers"));
+  const notifyKeywords = JSON.parse(cfg.get("notifyKeywords"));
+
+  let text = "This should never be seen. Please report to developer";
+
+  if (notifyGuilds.includes(messagePackage.guild_id)) {
+    text = `Notification from watched guild: ${
+      common.guilds.getGuild(messagePackage.guild_id).name
+    } (${messagePackage.guild_id})`;
+  } else if (notifyChannels.includes(messagePackage.channel_id)) {
+    text = `Notification from watched channel: ${channelModule.getChannel(
+      messagePackage.channel_id,
+    )} (${messagePackage.channel_id})`;
+  } else if (notifyUsers.includes(messagePackage.author.id)) {
+    text = `Notification from watched user: ${messagePackage.author.username}#${messagePackage.author.discriminator} (${messagePackage.author.id})`;
+  } else {
+    text = `Notification from watched keyword: ${getActivicationKeyword(
+      messagePackage,
+      notifyKeywords,
+    )}`;
+  }
+  return text;
+}
+
 export function stop(): void {
   inject.uninjectAll();
   common.fluxDispatcher.unsubscribe("MESSAGE_CREATE", onMessageRecive as types.AnyFunction);
 }
+
 export { cfg, settingsScreen as Settings };

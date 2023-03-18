@@ -3,7 +3,6 @@ import { components, util } from "replugged";
 import { cfg } from "./index";
 const { FormItem, TextInput, Category, SwitchItem, FormText } = components;
 
-//todo settings page
 export default (): React.ReactElement => {
   const notifyGuilds = util.useSetting(cfg, "notifyGuilds");
   const notifyChannels = util.useSetting(cfg, "notifyChannels");
@@ -24,6 +23,7 @@ export default (): React.ReactElement => {
   const statusOverride = util.useSetting(cfg, "statusOverride", true);
   const lurkedGuilds = util.useSetting(cfg, "lurkedGuilds", false);
   const managedChannels = util.useSetting(cfg, "managedChannels", false);
+
   return (
     <>
       <Category title="Notify" note="Notify me of these items.">

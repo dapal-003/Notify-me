@@ -5,10 +5,10 @@ export interface messageObj {
   channel_id: string;
   components: object[];
   content: string;
-  edited_timestamp: string;
+  edited_timestamp: null | string;
   embeds: object[];
   flags: number;
-  guild_id: string;
+  guild_id?: string;
   id: string;
   member: member;
   mention_everyone: boolean;
@@ -16,30 +16,58 @@ export interface messageObj {
   mentions: Array<author>;
   nonce: string;
   pinned: boolean;
-  referenced_message: messageObj;
+  referenced_message: refferenceMessage;
+  message_reference: messageReference;
+  timestamp: string;
+  tts: boolean;
+  type: number;
+}
+
+interface messageReference {
+  channel_id: string;
+  guild_id: string;
+  message_id: string;
+}
+
+export interface refferenceMessage {
+  attachments: Array<attachment>;
+  author: author;
+  channel_id: string;
+  components: [];
+  content: string;
+  edited_timestamp: null | string;
+  embeds: [];
+  flags: number;
+  id: string;
+  mention_everyone: boolean;
+  mention_roles: string[];
+  mentions: [];
+  pinned: boolean;
   timestamp: string;
   tts: boolean;
   type: number;
 }
 export interface author {
-  avatar: string;
-  avatarDecoration: undefined | string;
+  avatar: null | string;
+  avatarDecoration?: null | string;
+  avatar_decoration?: null | string;
   discriminator: string;
-  display_name: string;
+  display_name: null | string;
   id: string;
-  publicFlags: number;
+  publicFlags?: number;
+  public_flags?: number;
   username: string;
 }
 export interface member {
-  avatar: string;
-  communication_disabled_until: undefined | string;
+  avatar: null | string;
+  communication_disabled_until: null | string;
   deaf: boolean;
   flags: number;
   joined_at: string;
   mute: boolean;
-  nick: string;
+  nick: null | string;
   pending: boolean;
-  premium_since: string;
+  premium_since: null | string;
   roles: string[];
 }
 export interface attachment {
@@ -85,7 +113,7 @@ export interface messageCreate {
 }
 export interface userInterface {
   avatar: string;
-  avatarDecoration: undefined | string;
+  avatarDecoration: null | string;
   bot: boolean;
   desktop: boolean;
   discriminator: string;
@@ -296,4 +324,33 @@ export interface userSettingsModuleInterface {
   isSuppressEveryoneEnabled: types.AnyFunction;
   isSuppressRolesEnabled: types.AnyFunction;
   resolvedMessageNotifications: types.AnyFunction;
+}
+export interface channelObject {
+  application_id: undefined | string;
+  defaultAutoArchiveDuration: undefined | string;
+  defaultThreadRateLimitPerUser: undefined | string;
+  flags_: number;
+  guild_id: string;
+  id: string;
+  lastMessageId: string;
+  lastPinTimestamp: string;
+  memberListId: undefined | [];
+  name: string;
+  nsfw_: boolean;
+  parent_id: string;
+  permissionOverwrites_: object;
+  position_: number;
+  rateLimitPerUser_: number;
+  topic_: string;
+  type: number;
+  version: string;
+  accessPermissions: bigint;
+  bitrate: number;
+  flags: number;
+  nsfw: boolean;
+  permissionOverwrites: object;
+  position: number;
+  rateLimitPerUser: number;
+  topic: string;
+  userLimit: number;
 }

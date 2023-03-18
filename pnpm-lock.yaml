@@ -12,6 +12,7 @@ specifiers:
   prettier: ^2.8.1
   react: ^18.2.0
   replugged: ^4.1.0
+  type-fest: ^3.5.3
   typescript: ^4.8.4
 
 dependencies:
@@ -28,6 +29,7 @@ devDependencies:
   eslint-plugin-react: 7.31.10_eslint@8.25.0
   prettier: 2.8.1
   replugged: 4.1.0
+  type-fest: 3.6.1
   typescript: 4.8.4
 
 packages:
@@ -3546,6 +3548,11 @@ packages:
   /type-fest/0.20.2:
     resolution: {integrity: sha512-Ne+eE4r0/iWnpAxD852z3A+N0Bt5RN//NjJwRd2VFHEmrywxf5vsZlh4R6lixl6B+wz/8d+maTSAkN1FIkI3LQ==}
     engines: {node: '>=10'}
+    dev: true
+
+  /type-fest/3.6.1:
+    resolution: {integrity: sha512-htXWckxlT6U4+ilVgweNliPqlsVSSucbxVexRYllyMVJDtf5rTjv6kF/s+qAd4QSL1BZcnJPEJavYBPQiWuZDA==}
+    engines: {node: '>=14.16'}
     dev: true
 
   /typescript/4.8.4:
