@@ -40,19 +40,18 @@ const isBlockedModule = (await webpack.waitForModule(
 export const transitionModule = webpack.getBySource(
   "Routing/Utils",
 ) as unknown as types.ObjectExports;
-logger.log(transitionModule);
 export const transitionTo = webpack.getFunctionBySource(transitionModule, "if") as unknown as (
   destination: string,
 ) => {};
 const defaultSettings: Partial<settingsInterface> = {
-  notifyGuilds: '"[""]"',
-  notifyChannels: '"[""]"',
+  notifyGuilds: '[""]',
+  notifyChannels: '[""]',
   notifyUsers: '"[""]"',
   notifyKeywords: '"[""]"',
-  supressGuilds: '"[""]"',
-  supressChannels: '"[""]"',
-  supressUsers: '"[""]"',
-  supressKeywords: '"[""]"',
+  suppressGuilds: '"[""]"',
+  suppressChannels: '"[""]"',
+  suppressUsers: '"[""]"',
+  suppressKeywords: '"[""]"',
 
   statusOverride: true, //true
 
@@ -71,7 +70,7 @@ const cfg = await settings.init<settingsInterface>("dev.Dapal.NotifyMe");
 
 for (const [key, value] of Object.entries(defaultSettings)) {
   if (!cfg.has(key as never)) {
-    console.log(`Adding new settings ${key} with value`, value);
+    logger.log(`Adding new settings ${key} with value`, value);
     cfg.set(key as never, value as never);
   }
 }
@@ -103,7 +102,7 @@ onMessageRecive = (e) => {
       // }
     }
   } catch (error) {
-    console.log(error);
+    logger.log(error);
   }
 };
 
@@ -114,18 +113,18 @@ onMessageRecive = (e) => {
  * @param {String[]} keywords Keywords to search for within the message
  * @returns {Boolean} Does the message contain a keyword?
  */
-export function containsKeyword(messageEvent: messageCreate, keywords: string): boolean {
+export function containsKeyword(messageEvent: messageCreate, keywords: string[]): boolean {
   let { message } = messageEvent;
   let { content } = message;
   if (!content) return false;
   const keywordDetection = cfg.get("method"); // keyword
   const caseSensitive = cfg.get("caseSensitive");
-  const keywordsObject = JSON.parse(keywords);
+
   if (!caseSensitive) {
     content = content.toLowerCase();
-    keywords = keywordsObject.map((keyword: string) => keyword.toLowerCase());
+    keywords = keywords.map((keyword: string) => keyword.toLowerCase());
   }
-  for (const keyword of keywordsObject) {
+  for (const keyword of keywords) {
     if (keyword === "") {
       continue;
     }
@@ -148,17 +147,16 @@ export function containsKeyword(messageEvent: messageCreate, keywords: string): 
  * @param {String[]} keywords Keywords to search for within the message
  * @returns {Boolean} Does the message contain a keyword?
  */
-export function getActivicationKeyword(message: messageObj, keywords: string): string {
+export function getActivicationKeyword(message: messageObj, keywords: string[]): string {
   let { content } = message;
   if (!content) return "Something went wrong, please report to the developer";
   const keywordDetection = cfg.get("method"); // keyword
   const caseSensitive = cfg.get("caseSensitive");
-  const keywordsObject = JSON.parse(keywords);
   if (!caseSensitive) {
     content = content.toLowerCase();
-    keywords = keywordsObject.map((keyword: string) => keyword.toLowerCase());
+    keywords = keywords.map((keyword: string) => keyword.toLowerCase());
   }
-  for (const keyword of keywordsObject) {
+  for (const keyword of keywords) {
     if (keyword === "") {
       continue;
     }
@@ -259,28 +257,28 @@ export function handleNotification(
   // Used to determine if a message should go through when only custom notifications is
   // selected.
   let messageIsWanted = false;
+  const suppressGuilds = JSON.parse(cfg.get("suppressGuilds"));
+  const suppressChannels = JSON.parse(cfg.get("suppressChannels"));
+  const suppressUsers = JSON.parse(cfg.get("suppressUsers"));
+  const suppressKeywords = JSON.parse(cfg.get("suppressKeywords"));
+  if (!suppressGuilds) return false;
+  if (!suppressChannels) return false;
+  if (!suppressUsers) return false;
+  if (!suppressKeywords) return false;
 
-  const supressGuilds = JSON.parse(cfg.get("supressGuilds"));
-  const supressChannels = JSON.parse(cfg.get("supressChannels"));
-  const supressUsers = JSON.parse(cfg.get("supressUsers"));
-  const supressKeywords = JSON.parse(cfg.get("supressKeywords"));
-  if (!supressGuilds) return false;
-  if (!supressChannels) return false;
-  if (!supressUsers) return false;
-  if (!supressKeywords) return false;
+  if (suppressGuilds.includes(messagePackage.guildId)) {
+    return false;
+  }
+  if (suppressChannels.includes(channel.id)) {
+    return false;
+  }
+  if (suppressUsers.includes(messageAuthor.id)) {
+    return false;
+  }
+  if (containsKeyword(messagePackage, suppressKeywords)) {
+    return false;
+  }
 
-  if (supressGuilds.includes(messagePackage.guildId)) {
-    return false;
-  }
-  if (supressChannels.includes(channel.id)) {
-    return false;
-  }
-  if (supressUsers.includes(messageAuthor.id)) {
-    return false;
-  }
-  if (containsKeyword(messagePackage, supressKeywords)) {
-    return false;
-  }
   const notifyGuilds = JSON.parse(cfg.get("notifyGuilds"));
   const notifyChannels = JSON.parse(cfg.get("notifyChannels"));
   const notifyUsers = JSON.parse(cfg.get("notifyUsers"));

@@ -9,10 +9,10 @@ export default (): React.ReactElement => {
   const notifyUsers = util.useSetting(cfg, "notifyUsers");
   const notifyKeyword = util.useSetting(cfg, "notifyKeywords");
 
-  const supressGuilds = util.useSetting(cfg, "supressGuilds");
-  const supressChannels = util.useSetting(cfg, "supressChannels");
-  const supressUsers = util.useSetting(cfg, "supressUsers");
-  const supressKeyword = util.useSetting(cfg, "supressKeywords");
+  const suppressGuilds = util.useSetting(cfg, "suppressGuilds");
+  const suppressChannels = util.useSetting(cfg, "suppressChannels");
+  const suppressUsers = util.useSetting(cfg, "suppressUsers");
+  const suppressKeyword = util.useSetting(cfg, "suppressKeywords");
 
   const method = util.useSetting(cfg, "method", true);
   const caseSensitive = util.useSetting(cfg, "caseSensitive", false);
@@ -48,25 +48,25 @@ export default (): React.ReactElement => {
         </FormItem>
         <br />
       </Category>
-      <Category title="Supress" note="Supress me of these items:">
+      <Category title="Suppress" note="Suppress me of these items:">
         <FormText.LABEL_BOLD>
           Important! Items need to be in JSON array notation: ["1000926524452647132"]
         </FormText.LABEL_BOLD>
         <br />
-        <FormItem title="Supress guilds">
-          <TextInput {...supressGuilds} />
+        <FormItem title="Suppress guilds">
+          <TextInput {...suppressGuilds} />
         </FormItem>
         <br />
-        <FormItem title="Supress Channels">
-          <TextInput {...supressChannels} />
+        <FormItem title="Suppress Channels">
+          <TextInput {...suppressChannels} />
         </FormItem>
         <br />
-        <FormItem title="Supress Users">
-          <TextInput {...supressUsers} />
+        <FormItem title="Suppress Users">
+          <TextInput {...suppressUsers} />
         </FormItem>
         <br />
-        <FormItem title="Supress Keywords">
-          <TextInput {...supressKeyword} />
+        <FormItem title="Suppress Keywords">
+          <TextInput {...suppressKeyword} />
         </FormItem>
         <br />
       </Category>

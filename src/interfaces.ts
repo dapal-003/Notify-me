@@ -86,10 +86,10 @@ export interface settingsInterface {
   notifyUsers?: string;
   notifyKeywords?: string;
 
-  supressGuilds?: string;
-  supressChannels?: string;
-  supressUsers?: string;
-  supressKeywords?: string;
+  suppressGuilds?: string;
+  suppressChannels?: string;
+  suppressUsers?: string;
+  suppressKeywords?: string;
 
   statusOverride?: boolean; //true
 

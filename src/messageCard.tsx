@@ -15,9 +15,10 @@ interface MessageCardProps {
 export type MessageCardType = React.FC<MessageCardProps>;
 
 export default ((props) => {
-  console.log(props);
   const { name } = channelModule.getChannel(props.messageObject.channel_id) as channelObject;
-  const guildName = common.guilds.getGuild(props.messageObject.guild_id).name;
+  const guildName = props.messageObject.guild_id
+    ? common.guilds.getGuild(props.messageObject.guild_id).name
+    : "DMs";
   const avatar = `https://cdn.discordapp.com/avatars/${props.messageObject.author.id}/${props.messageObject.author.avatar}.webp?size=100`;
   const activationReason = getActivator(props.messageObject);
 
@@ -57,15 +58,12 @@ export default ((props) => {
           <div
             className="button-ejjZWC lookOutlined-3RTC7c colorGreen-jIPCAS jumpButton"
             onClick={() => {
-              console.log("I'M HERE");
-              common.messages.jumpToMessage({
-                channelId: props.messageObject.channel_id,
-                messageId: props.messageObject.id,
-                flash: true,
-              });
               transitionTo(
-                `/channels/${props.messageObject.guild_id}/${props.messageObject.channel_id}/${props.messageObject.id}`,
+                `/channels/${props.messageObject.guild_id ?? "@me"}/${
+                  props.messageObject.channel_id
+                }/${props.messageObject.id}`,
               );
+              if (props.onClose) props.onClose();
             }}>
             Jump to message
           </div>
