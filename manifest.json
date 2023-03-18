@@ -10,7 +10,7 @@
   "version": "1.0.0",
   "updater": {
     "type": "github",
-    "id": "dapal-003/NotifyMe"
+    "id": "dapal-003/Notify-me"
   },
   "license": "GPL-3.0",
   "type": "replugged-plugin",
