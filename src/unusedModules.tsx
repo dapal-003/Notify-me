@@ -47,3 +47,7 @@
 // logger.log(mentionedModule);
 // const functionInModule = webpack.getFunctionBySource(mentionedModule, "rawMessage");
 // logger.log(functionInModule);
+// A bunch of handy features, some already implemented
+// export const getInfoModule = (await webpack.waitForModule(
+//   webpack.filters.byProps("sockets", "events", "commands"),
+// )) as unknown as getInfoModuleInterface;

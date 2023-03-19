@@ -66,9 +66,12 @@ const defaultSettings: Partial<settingsInterface> = {
   lurkedGuilds: false,
   managedChannels: false,
   simpleNotation: true,
+  settingsCheck: { passed: true, message: "default init" },
 };
 
 const cfg = await settings.init<settingsInterface>("dev.Dapal.NotifyMe");
+
+//cfg.delete("settingsCheck");
 
 for (const [key, value] of Object.entries(defaultSettings)) {
   if (!cfg.has(key as never)) {
@@ -132,10 +135,7 @@ export function containsKeyword(messageEvent: messageCreate, keywords: string[])
     }
 
     if (!substring) {
-      /** this regex is a bit more advanced than just the word boundary,
-       *  it also males sure that some common characters that might be put at the end or beginning of a word won't cause it to miss.
-       *  For example allow key to activate both key and key. and key? and key() */
-      if (content.match(`(^|[\\s/?.,'":()\\-_\\*!\`])${keyword}([\\s/?.,'":()\\-_\\*!\`]|$)`)) {
+      if (content.match(`\\b${keyword}\\b`)) {
         return true;
       }
     } else if (content.includes(keyword)) {
@@ -167,10 +167,7 @@ export function getActivationKeyword(message: messageObj, keywords: string[]): s
     }
 
     if (!substring) {
-      /** this regex is a bit more advanced than just the word boundary,
-       *  it also males sure that some common characters that might be put at the end or beginning of a word won't cause it to miss.
-       *  For example allow key to activate both key and key. and key? and key() */
-      if (content.match(`(^|[\\s/?.,'":()\\-_\\*!\`])${keyword}([\\s/?.,'":()\\-_\\*!\`]|$)`)) {
+      if (content.match(`\\b${keyword}\\b`)) {
         return keyword;
       }
     } else if (content.includes(keyword)) {

@@ -23,13 +23,11 @@ export interface messageObj {
   tts: boolean;
   type: number;
 }
-
 interface messageReference {
   channel_id: string;
   guild_id: string;
   message_id: string;
 }
-
 export interface referenceMessage {
   attachments: attachment[];
   author: author;
@@ -104,6 +102,11 @@ export interface settingsInterface {
   lurkedGuilds?: boolean;
   managedChannels?: boolean;
   simpleNotation?: boolean;
+  settingsCheck?: settingsCheck;
+}
+export interface settingsCheck {
+  passed: boolean;
+  message: string;
 }
 export interface messageCreate {
   channelId: string;
@@ -355,4 +358,167 @@ export interface channelObject {
   rateLimitPerUser: number;
   topic: string;
   userLimit: number;
+}
+export interface getInfoModuleInterface {
+  commands: commandsInterface;
+  events: eventsInterface;
+  getCurrentUser: types.AnyFunction;
+  getJoi: types.AnyFunction;
+  onConnect: types.AnyFunction;
+  onDisconnect: types.AnyFunction;
+  sockets: object;
+  subscriptions: [];
+}
+export interface guildInterface {
+  afkChannelId: null | string;
+  afkTimeout: number;
+  applicationCommandCounts: object;
+  application_id: null | string;
+  banner: null | string;
+  defaultMessageNotifications: number;
+  description: null | string;
+  discoverySplash: null | string;
+  explicitContentFilter: number;
+  features: object;
+  homeHeader: null | string;
+  hubType: null | string;
+  icon: null | string;
+  id: string;
+  joinedAt: object;
+  latestOnboardingQuestionId: null | string;
+  maxMembers: number;
+  maxStageVideoChannelUsers: number;
+  maxVideoChannelUsers: number;
+  mfaLevel: number;
+  name: string;
+  nsfwLevel: number;
+  ownerId: string;
+  preferredLocale: string;
+  premiumProgressBarEnabled: boolean;
+  premiumSubscriberCount: number;
+  premiumTier: number;
+  publicUpdatesChannelId: string;
+  roles: object;
+  rulesChannelId: string;
+  safetyAlertsChannelId: null | string;
+  splash: null | string;
+  systemChannelFlags: number;
+  systemChannelId: string;
+  vanityURLCode: null | string;
+  verificationLevel: number;
+  acronym: string;
+}
+interface commandsInterface {
+  ACCEPT_ACTIVITY_INVITE: object;
+  ACTIVITY_INVITE_USER: object;
+  AUTHENTICATE: object;
+  AUTHORIZE: object;
+  BILLING_POPUP_BRIDGE_CALLBACK: object;
+  BRAINTREE_POPUP_BRIDGE_CALLBACK: object;
+  BROWSER_HANDOFF: object;
+  CAPTURE_LOG: object;
+  CLOSE_ACTIVITY_JOIN_REQUEST: object;
+  CONNECTIONS_CALLBACK: object;
+  CONNECT_TO_LOBBY: object;
+  CONNECT_TO_LOBBY_VOICE: object;
+  CREATE_CHANNEL_INVITE: object;
+  CREATE_LOBBY: object;
+  DEEP_LINK: object;
+  DELETE_LOBBY: object;
+  DISCONNECT_FROM_LOBBY: object;
+  DISCONNECT_FROM_LOBBY_VOICE: object;
+  ENCOURAGE_HW_ACCELERATION: object;
+  GET_APPLICATION_TICKET: object;
+  GET_CHANNEL: object;
+  GET_CHANNELS: object;
+  GET_ENTITLEMENTS: object;
+  GET_ENTITLEMENT_TICKET: object;
+  GET_GUILD: object;
+  GET_GUILDS: object;
+  GET_IMAGE: object;
+  GET_NETWORKING_CONFIG: object;
+  GET_PLATFORM_BEHAVIORS: object;
+  GET_RELATIONSHIPS: object;
+  GET_SELECTED_VOICE_CHANNEL: object;
+  GET_SKUS: object;
+  GET_USER: object;
+  GET_USER_ACHIEVEMENTS: object;
+  GET_VOICE_SETTINGS: object;
+  GIFT_CODE_BROWSER: object;
+  GUILD_TEMPLATE_BROWSER: object;
+  INVITE_BROWSER: object;
+  NETWORKING_CREATE_TOKEN: object;
+  NETWORKING_PEER_METRICS: object;
+  NETWORKING_SYSTEM_METRICS: object;
+  OPEN_EXTERNAL_LINK: object;
+  OPEN_INVITE_DIALOG: object;
+  OPEN_OVERLAY_ACTIVITY_INVITE: object;
+  OPEN_OVERLAY_GUILD_INVITE: object;
+  OPEN_OVERLAY_VOICE_SETTINGS: object;
+  OVERLAY: object;
+  REPLUGGED_INSTALL: object;
+  SEARCH_LOBBIES: object;
+  SELECT_TEXT_CHANNEL: object;
+  SELECT_VOICE_CHANNEL: object;
+  SEND_ACTIVITY_JOIN_INVITE: object;
+  SEND_ANALYTICS_EVENT: object;
+  SEND_TO_LOBBY: object;
+  SET_ACTIVITY: object;
+  SET_CERTIFIED_DEVICES: object;
+  SET_CONFIG: object;
+  SET_ORIENTATION_LOCK_STATE: object;
+  SET_OVERLAY_LOCKED: object;
+  SET_USER_ACHIEVEMENT: object;
+  SET_USER_VOICE_SETTINGS: object;
+  SET_USER_VOICE_SETTINGS_2: object;
+  SET_VOICE_SETTINGS: object;
+  SET_VOICE_SETTINGS_2: object;
+  START_PREMIUM_PURCHASE: object;
+  START_PURCHASE: object;
+  SUBSCRIBE: object;
+  UNSUBSCRIBE: object;
+  UPDATE_LOBBY: object;
+  UPDATE_LOBBY_MEMBER: object;
+  USER_SETTINGS_GET_LOCALE: object;
+  VALIDATE_APPLICATION: object;
+}
+interface eventsInterface {
+  ACTIVITY_INVITE: object;
+  ACTIVITY_JOIN: object;
+  ACTIVITY_JOIN_REQUEST: object;
+  ACTIVITY_PIP_MODE_UPDATE: object;
+  ACTIVITY_SPECTATE: object;
+  CHANNEL_CREATE: object;
+  CURRENT_USER_UPDATE: object;
+  ENTITLEMENT_CREATE: object;
+  ENTITLEMENT_DELETE: object;
+  GAME_JOIN: object;
+  GAME_SPECTATE: object;
+  GUILD_CREATE: object;
+  GUILD_STATUS: object;
+  LOBBY_DELETE: object;
+  LOBBY_MEMBER_CONNECT: object;
+  LOBBY_MEMBER_DISCONNECT: object;
+  LOBBY_MEMBER_UPDATE: object;
+  LOBBY_MESSAGE: object;
+  LOBBY_UPDATE: object;
+  MESSAGE_CREATE: object;
+  MESSAGE_DELETE: object;
+  MESSAGE_UPDATE: object;
+  NOTIFICATION_CREATE: object;
+  ORIENTATION_UPDATE: object;
+  OVERLAY: object;
+  OVERLAY_UPDATE: object;
+  RELATIONSHIP_UPDATE: object;
+  SPEAKING_START: object;
+  SPEAKING_STOP: object;
+  THERMAL_STATE_UPDATE: object;
+  USER_ACHIEVEMENT_UPDATE: object;
+  VOICE_CHANNEL_SELECT: object;
+  VOICE_CONNECTION_STATUS: object;
+  VOICE_SETTINGS_UPDATE: object;
+  VOICE_SETTINGS_UPDATE_2: object;
+  VOICE_STATE_CREATE: object;
+  VOICE_STATE_DELETE: object;
+  VOICE_STATE_UPDATE: object;
 }
