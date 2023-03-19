@@ -132,7 +132,10 @@ export function containsKeyword(messageEvent: messageCreate, keywords: string[])
     }
 
     if (!substring) {
-      if (content.match(`\\b${keyword}\\b`)) {
+      /** this regex is a bit more advanced than just the word boundary,
+       *  it also males sure that some common characters that might be put at the end or beginning of a word won't cause it to miss.
+       *  For example allow key to activate both key and key. and key? and key() */
+      if (content.match(`(^|[\\s/?.,'":()\\-_\\*!\`])${keyword}([\\s/?.,'":()\\-_\\*!\`]|$)`)) {
         return true;
       }
     } else if (content.includes(keyword)) {
@@ -164,7 +167,10 @@ export function getActivationKeyword(message: messageObj, keywords: string[]): s
     }
 
     if (!substring) {
-      if (content.match(`\\b${keyword}\\b`)) {
+      /** this regex is a bit more advanced than just the word boundary,
+       *  it also males sure that some common characters that might be put at the end or beginning of a word won't cause it to miss.
+       *  For example allow key to activate both key and key. and key? and key() */
+      if (content.match(`(^|[\\s/?.,'":()\\-_\\*!\`])${keyword}([\\s/?.,'":()\\-_\\*!\`]|$)`)) {
         return keyword;
       }
     } else if (content.includes(keyword)) {
