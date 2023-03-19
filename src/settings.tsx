@@ -1,7 +1,7 @@
 import type React from "react";
 import { components, util } from "replugged";
 import { cfg } from "./index";
-const { FormItem, TextInput, Category, SwitchItem, FormText } = components;
+const { FormItem, TextInput, Category, SwitchItem } = components;
 
 export default (): React.ReactElement => {
   const notifyGuilds = util.useSetting(cfg, "notifyGuilds");
@@ -17,6 +17,7 @@ export default (): React.ReactElement => {
   const method = util.useSetting(cfg, "method", true);
   const caseSensitive = util.useSetting(cfg, "caseSensitive", false);
   const highlightKeywords = util.useSetting(cfg, "highlightKeywords", true);
+  const simpleNotation = util.useSetting(cfg, "simpleNotation", true);
 
   const mentionEveryone = util.useSetting(cfg, "mentionEveryone", true);
   const mentionRoles = util.useSetting(cfg, "mentionRoles", true);
@@ -27,10 +28,6 @@ export default (): React.ReactElement => {
   return (
     <>
       <Category title="Notify" note="Notify me of these items.">
-        <FormText.LABEL_BOLD>
-          Important! Items need to be in JSON array notation: ["1000926524452647132"]
-        </FormText.LABEL_BOLD>
-        <br />
         <FormItem title="Notify guilds">
           <TextInput {...notifyGuilds} />
         </FormItem>
@@ -49,10 +46,6 @@ export default (): React.ReactElement => {
         <br />
       </Category>
       <Category title="Suppress" note="Suppress me of these items:">
-        <FormText.LABEL_BOLD>
-          Important! Items need to be in JSON array notation: ["1000926524452647132"]
-        </FormText.LABEL_BOLD>
-        <br />
         <FormItem title="Suppress guilds">
           <TextInput {...suppressGuilds} />
         </FormItem>
@@ -71,13 +64,18 @@ export default (): React.ReactElement => {
         <br />
       </Category>
       <Category title="Settings" note="Additional settings on how the plugin works">
+        <SwitchItem {...simpleNotation} note="When disabled you must use JSON notation">
+          Use a comma to separate the items you want to notify or suppress instead of JSON notation
+        </SwitchItem>
         <SwitchItem
           {...method}
           note="If any part of the word is in a message - for example `kat` would trigger if someone said
           `kitkat`.">
           Use substring matches.
         </SwitchItem>
-        <SwitchItem {...caseSensitive} note="Makes the keyword `kat` match both `KAT` and `kat`">
+        <SwitchItem
+          {...caseSensitive}
+          note="Makes the keyword `kat` match only `kat` and not `KAT`">
           Make keywords case sensitive.
         </SwitchItem>
         <SwitchItem

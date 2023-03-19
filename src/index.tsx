@@ -43,15 +43,16 @@ export const transitionModule = webpack.getBySource(
 export const transitionTo = webpack.getFunctionBySource(transitionModule, "if") as unknown as (
   destination: string,
 ) => {};
+
 const defaultSettings: Partial<settingsInterface> = {
-  notifyGuilds: '[""]',
-  notifyChannels: '[""]',
-  notifyUsers: '"[""]"',
-  notifyKeywords: '"[""]"',
-  suppressGuilds: '"[""]"',
-  suppressChannels: '"[""]"',
-  suppressUsers: '"[""]"',
-  suppressKeywords: '"[""]"',
+  notifyGuilds: "",
+  notifyChannels: "",
+  notifyUsers: "",
+  notifyKeywords: "",
+  suppressGuilds: "",
+  suppressChannels: "",
+  suppressUsers: "",
+  suppressKeywords: "",
 
   statusOverride: true, //true
 
@@ -64,6 +65,7 @@ const defaultSettings: Partial<settingsInterface> = {
 
   lurkedGuilds: false,
   managedChannels: false,
+  simpleNotation: true,
 };
 
 const cfg = await settings.init<settingsInterface>("dev.Dapal.NotifyMe");
@@ -257,10 +259,20 @@ export function handleNotification(
   // Used to determine if a message should go through when only custom notifications is
   // selected.
   let messageIsWanted = false;
-  const suppressGuilds = JSON.parse(cfg.get("suppressGuilds"));
-  const suppressChannels = JSON.parse(cfg.get("suppressChannels"));
-  const suppressUsers = JSON.parse(cfg.get("suppressUsers"));
-  const suppressKeywords = JSON.parse(cfg.get("suppressKeywords"));
+  const simpleNotation = cfg.get("simpleNotation");
+  const suppressGuilds = simpleNotation
+    ? cfg.get("suppressGuilds")?.split(",")
+    : JSON.parse(cfg.get("suppressGuilds"));
+  const suppressChannels = simpleNotation
+    ? cfg.get("suppressChannels")?.split(",")
+    : JSON.parse(cfg.get("suppressChannels"));
+  const suppressUsers = simpleNotation
+    ? cfg.get("suppressUsers")?.split(",")
+    : JSON.parse(cfg.get("suppressUsers"));
+  const suppressKeywords = simpleNotation
+    ? cfg.get("suppressKeywords")?.split(",")
+    : JSON.parse(cfg.get("suppressKeywords"));
+
   if (!suppressGuilds) return false;
   if (!suppressChannels) return false;
   if (!suppressUsers) return false;
@@ -279,10 +291,18 @@ export function handleNotification(
     return false;
   }
 
-  const notifyGuilds = JSON.parse(cfg.get("notifyGuilds"));
-  const notifyChannels = JSON.parse(cfg.get("notifyChannels"));
-  const notifyUsers = JSON.parse(cfg.get("notifyUsers"));
-  const notifyKeywords = JSON.parse(cfg.get("notifyKeywords"));
+  const notifyGuilds = simpleNotation
+    ? cfg.get("notifyGuilds")?.split(",")
+    : JSON.parse(cfg.get("notifyGuilds"));
+  const notifyChannels = simpleNotation
+    ? cfg.get("notifyChannels")?.split(",")
+    : JSON.parse(cfg.get("notifyChannels"));
+  const notifyUsers = simpleNotation
+    ? cfg.get("notifyUsers")?.split(",")
+    : JSON.parse(cfg.get("notifyUsers"));
+  const notifyKeywords = simpleNotation
+    ? cfg.get("notifyKeywords")?.split(",")
+    : JSON.parse(cfg.get("notifyKeywords"));
 
   if (notifyGuilds.includes(messagePackage.guildId)) {
     messageIsWanted = true;

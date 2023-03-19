@@ -92,17 +92,18 @@ export interface settingsInterface {
   suppressUsers?: string;
   suppressKeywords?: string;
 
-  statusOverride?: boolean; //true
+  statusOverride?: boolean;
 
-  method?: boolean; //'word',
-  caseSensitive?: boolean; //false
+  method?: boolean;
+  caseSensitive?: boolean;
 
-  mentionEveryone?: boolean; //true
-  mentionRoles?: boolean; // true
+  mentionEveryone?: boolean;
+  mentionRoles?: boolean;
 
-  highlightKeywords?: boolean; // true
-  lurkedGuilds?: boolean; //false
-  managedChannels?: boolean; //false
+  highlightKeywords?: boolean;
+  lurkedGuilds?: boolean;
+  managedChannels?: boolean;
+  simpleNotation?: boolean;
 }
 export interface messageCreate {
   channelId: string;
