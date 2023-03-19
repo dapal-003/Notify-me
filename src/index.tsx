@@ -117,7 +117,7 @@ export function containsKeyword(messageEvent: messageCreate, keywords: string[])
   let { message } = messageEvent;
   let { content } = message;
   if (!content) return false;
-  const keywordDetection = cfg.get("method"); // keyword
+  const substring = cfg.get("method"); // keyword
   const caseSensitive = cfg.get("caseSensitive");
 
   if (!caseSensitive) {
@@ -129,8 +129,8 @@ export function containsKeyword(messageEvent: messageCreate, keywords: string[])
       continue;
     }
 
-    if (!keywordDetection) {
-      if (content.match(`(^|[\\s/?.,'":()\\-_\\*!\`])${keyword}([\\s/?.,'":()\\-_\\*!\`]|$)`)) {
+    if (!substring) {
+      if (content.match(`\\b${keyword}\\b`)) {
         return true;
       }
     } else if (content.includes(keyword)) {
@@ -150,7 +150,7 @@ export function containsKeyword(messageEvent: messageCreate, keywords: string[])
 export function getActivationKeyword(message: messageObj, keywords: string[]): string {
   let { content } = message;
   if (!content) return "Something went wrong, please report to the developer";
-  const keywordDetection = cfg.get("method"); // keyword
+  const substring = cfg.get("method"); // keyword
   const caseSensitive = cfg.get("caseSensitive");
   if (!caseSensitive) {
     content = content.toLowerCase();
@@ -161,8 +161,8 @@ export function getActivationKeyword(message: messageObj, keywords: string[]): s
       continue;
     }
 
-    if (!keywordDetection) {
-      if (content.match(`(^|[\\s/?.,'":()\\-_\\*!\`])${keyword}([\\s/?.,'":()\\-_\\*!\`]|$)`)) {
+    if (!substring) {
+      if (content.match(`\\b${keyword}\\b`)) {
         return keyword;
       }
     } else if (content.includes(keyword)) {

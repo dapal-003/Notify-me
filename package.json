@@ -1,7 +1,7 @@
 {
   "name": "notify-me",
-  "version": "1.0.0",
-  "description": "An attemt at cloning cutecord",
+  "version": "1.0.2",
+  "description": "An attempt at cloning cutecord",
   "engines": {
     "node": ">=14.0.0"
   },

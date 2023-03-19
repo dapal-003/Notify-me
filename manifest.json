@@ -7,7 +7,7 @@
     "discordID": "787438421609152522",
     "github": "dapal-003"
   },
-  "version": "1.0.0",
+  "version": "1.0.2",
   "updater": {
     "type": "github",
     "id": "dapal-003/Notify-me"
