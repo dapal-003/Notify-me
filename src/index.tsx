@@ -7,6 +7,7 @@ import {
   getCurrentSidebarChannelIdModuleInterface,
   getGuildIdModuleInterface,
   messageCreate,
+  messageInterface,
   messageObj,
   settingsInterface,
   userInterface,
@@ -43,6 +44,14 @@ export const transitionModule = webpack.getBySource(
 export const transitionTo = webpack.getFunctionBySource(transitionModule, "if") as unknown as (
   destination: string,
 ) => {};
+export const { exports: MessageConstructor } = webpack.getBySource(
+  /\.compact.*\.zalgo.*\.childrenMessageContent/,
+  { raw: true },
+) as unknown as any;
+const defaultFunction = webpack.getFunctionKeyBySource(
+  MessageConstructor,
+  /\.compact.*\.zalgo.*\.childrenMessageContent/,
+) as unknown as string;
 
 const defaultSettings: Partial<settingsInterface> = {
   notifyGuilds: "",
@@ -79,15 +88,29 @@ for (const [key, value] of Object.entries(defaultSettings)) {
     cfg.set(key as never, value as never);
   }
 }
+
 export async function start(): Promise<void> {
   await common.fluxDispatcher.subscribe("MESSAGE_CREATE", onMessageReceive as never);
+
+  inject.before(MessageConstructor, defaultFunction, (args: any) => {
+    const { message } = args[0].childrenMessageContent.props;
+    const simpleNotation = cfg.get("simpleNotation");
+    const notifyKeywords = simpleNotation
+      ? cfg.get("notifyKeywords")?.split(",")
+      : JSON.parse(cfg.get("notifyKeywords"));
+
+    if (cfg.get("highlightKeywords") && containsKeyword({ message }, notifyKeywords)) {
+      //highlight messages with keywords if wanted
+      let newArgs = args[0];
+      newArgs.childrenMessageContent.props.message.mentioned = true;
+      return newArgs;
+    } else return args;
+  });
 }
 
 onMessageReceive = (e) => {
   try {
     if (handleNotification(e, false, false)) {
-      logger.log("Spawn notification:");
-      logger.log(e);
       let key = Math.floor(Math.random() * 99999);
       showNotification({ key, messageObject: e.message });
       // if (!e.message.content) {
@@ -231,7 +254,7 @@ export function handleNotification(
   // ------
   // handle current user
   const currentUser = userModule.getCurrentUser() as userInterface;
-  const messageAuthor = userModule.getUser(messagePackage.message.author.id) as userInterface;
+  const messageAuthor = userModule.getUser(messagePackage.message.author?.id) as userInterface;
   // If the channel, current user, or message author aren't found then don't notify
   if (channel == null || currentUser == null || messageAuthor == null) {
     logger.log("Can't find first");

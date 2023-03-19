@@ -195,7 +195,7 @@ export default (): React.ReactElement => {
         </SwitchItem>
         <SwitchItem
           {...highlightKeywords}
-          note="Disabling this will make this addon appear more stealthy as there won't be highlights for notifications that don't normally exist.">
+          note="After disabling this option you'll need to restart your client for the changes to take effect on already rendered messages">
           Highlight messages with keywords
         </SwitchItem>
       </Category>

@@ -55,7 +55,11 @@ export default ((props) => {
         </div>
 
         <div className="contentBody">
-          <div className="content">{props.messageObject.content}</div>
+          <div className="content">
+            {props.messageObject.content
+              ? props.messageObject.content
+              : `Uploaded ${props.messageObject.attachments.length} pieces of media`}
+          </div>
           <div className="footerBar">
             <div
               className="button-ejjZWC lookOutlined-3RTC7c colorGreen-jIPCAS jumpButton"

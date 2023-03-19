@@ -1,27 +1,53 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { types } from "replugged";
 export interface messageObj {
-  attachments: attachment[];
-  author: author;
+  activity?: unknown;
+  application?: unknown;
+  applicationId?: unknown;
+  attachments?: attachment[];
+  author?: author;
+  blocked?: boolean;
+  bot?: boolean;
+  call?: unknown;
   channel_id: string;
-  components: object[];
+  codeLinks?: unknown[];
+  colorString?: unknown;
+  components?: object[];
   content: string;
-  edited_timestamp: null | string;
+  customRenderedContent?: unknown;
+  edited_timestamp?: null | string;
   embeds: object[];
   flags: number;
+  giftCodes: unknown[];
   guild_id?: string;
   id: string;
+  interaction?: unknown;
+  interactionData?: unknown;
+  interactionError?: unknown;
+  isSearchHit?: boolean;
+  loggingName: unknown;
   member: member;
+  mentionChannels?: unknown[];
   mention_everyone: boolean;
   mention_roles: object[];
   mentions: author[];
-  nonce: string;
+  messageReference?: null;
+  nick?: unknown;
+  nonce?: unknown;
   pinned: boolean;
-  referenced_message: referenceMessage;
-  message_reference: messageReference;
+  reactions?: unknown[];
+  referralTrialOfferId?: unknown;
+  roleSubscriptionData?: unknown;
+  state?: string;
+  stickerItems?: [];
+  stickers?: [];
+  referenced_message?: referenceMessage;
+  message_reference?: messageReference;
   timestamp: string;
   tts: boolean;
   type: number;
+  uploaderId?: unknown;
+  webhookId?: unknown;
 }
 interface messageReference {
   channel_id: string;
@@ -109,12 +135,12 @@ export interface settingsCheck {
   message: string;
 }
 export interface messageCreate {
-  channelId: string;
-  guildId: string;
-  isPushNotification: boolean;
+  channelId?: string;
+  guildId?: string;
+  isPushNotification?: boolean;
   message: messageObj;
-  optimistic: boolean;
-  type: string;
+  optimistic?: boolean;
+  type?: string;
 }
 export interface userInterface {
   avatar: string;
@@ -408,6 +434,18 @@ export interface guildInterface {
   verificationLevel: number;
   acronym: string;
 }
+export interface messageInterface {
+  channel: object;
+  compact: boolean;
+  flashKey: undefined;
+  groupId: string;
+  id: string;
+  isHighlight: boolean;
+  isLastItem: boolean;
+  message: messageObj;
+  renderContentOnly: boolean;
+}
+
 interface commandsInterface {
   ACCEPT_ACTIVITY_INVITE: object;
   ACTIVITY_INVITE_USER: object;
