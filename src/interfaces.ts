@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { types } from "replugged";
+import type { Jsonifiable } from "type-fest";
 export interface messageObj {
   activity?: unknown;
   application?: unknown;
   applicationId?: unknown;
-  attachments?: attachment[];
-  author?: author;
+  attachments: attachment[];
+  author: author;
   blocked?: boolean;
   bot?: boolean;
   call?: unknown;
@@ -105,7 +106,7 @@ export interface attachment {
   url: string;
   width: number;
 }
-export interface settingsInterface {
+export interface settingsInterface extends Record<string, Jsonifiable> {
   notifyGuilds?: string;
   notifyChannels?: string;
   notifyUsers?: string;
