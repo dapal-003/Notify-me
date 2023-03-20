@@ -6,8 +6,8 @@ import {
   getChannelIdModuleInterface,
   getCurrentSidebarChannelIdModuleInterface,
   getGuildIdModuleInterface,
+  getStatusModuleInterface,
   messageCreate,
-  messageInterface,
   messageObj,
   settingsInterface,
   userInterface,
@@ -52,6 +52,9 @@ const defaultFunction = webpack.getFunctionKeyBySource(
   MessageConstructor,
   /\.compact.*\.zalgo.*\.childrenMessageContent/,
 ) as unknown as string;
+const getStatusModule = (await webpack.waitForModule(
+  webpack.filters.byProps("getStatus", "getActivities"),
+)) as unknown as getStatusModuleInterface;
 
 const defaultSettings: Partial<settingsInterface> = {
   notifyGuilds: "",
@@ -113,21 +116,6 @@ onMessageReceive = (e) => {
     if (handleNotification(e, false, false)) {
       let key = Math.floor(Math.random() * 99999);
       showNotification({ key, messageObject: e.message });
-      // if (!e.message.content) {
-      //   common.toast.toast(
-      //     `${e.message.author.display_name ?? e.message.author.username} uploaded: ${
-      //       e.message.content
-      //     }`,
-      //     common.toast.Kind.MESSAGE,
-      //   );
-      // } else {
-      //   common.toast.toast(
-      //     `${e.message.author.display_name ?? e.message.author.username} Said: ${
-      //       e.message.content
-      //     }`,
-      //     common.toast.Kind.MESSAGE,
-      //   );
-      // }
     }
   } catch (error) {
     logger.log(error);
@@ -204,16 +192,7 @@ export function getActivationKeyword(message: messageObj, keywords: string[]): s
 export function shouldNotifyBase(
   currentUser: userInterface,
   messageAuthor: userInterface,
-  channel: channelInterface,
-  r?: boolean,
-  o?: boolean,
 ): boolean {
-  //Set variable defaults
-  r = r ?? false;
-  o = o ?? false;
-  if (o) {
-    // future proofing, will need it later probably and wanted to get rid of the error
-  }
   if (!messageAuthor.hasFlag(0)) {
     // Can't get the proper type here. From what I see flag 0 is the default flag, everyone has it, don't know if spammers do not have it.
     logger.log("has flag other than default");
@@ -226,14 +205,6 @@ export function shouldNotifyBase(
   if (isBlockedModule.isBlocked(messageAuthor.id)) {
     return false;
   }
-  // This is where Discord's status check would normally be, but we check later on to account for better
-  // customization.
-  // if (!r && getStatus() === StatusTypes.DND) {
-  //   return false
-  // }
-  // if (!o && allowNoMessages(channel)) {
-  //   return false
-  // }
   return true;
 }
 
@@ -257,12 +228,11 @@ export function handleNotification(
   const messageAuthor = userModule.getUser(messagePackage.message.author?.id) as userInterface;
   // If the channel, current user, or message author aren't found then don't notify
   if (channel == null || currentUser == null || messageAuthor == null) {
-    logger.log("Can't find first");
     return false;
   }
   // ------
-  // Check if the channel is muted, user is blocked, or message is from the current user.
-  if (!shouldNotifyBase(currentUser, messageAuthor, channel, r)) {
+  // Check if user is blocked, or message is from the current user.
+  if (!shouldNotifyBase(currentUser, messageAuthor)) {
     return false;
   }
   // ------
@@ -279,9 +249,12 @@ export function handleNotification(
   }
   // -------
   // get overwrite
-  // const currentStatus = getStatusModule.getStatus(); //Only gets "offline"
+  const currentStatus = getStatusModule.getStatus(); //Only gets "offline"
 
-  //const currentOverride = cfg.get("statusOverride");
+  const currentOverride = cfg.get("statusOverride");
+
+  if (currentStatus === "dnd" && !currentOverride) return false; //If user is in DND and doesn't want notifications to go through, return now.
+
   // Used to determine if a message should go through when only custom notifications is
   // selected.
   let messageIsWanted = false;
@@ -394,8 +367,8 @@ export function getActivator(messagePackage: messageObj): string {
     text = `Notification from watched channel: ${channelModule.getChannel(
       messagePackage.channel_id,
     )} (${messagePackage.channel_id})`;
-  } else if (notifyUsers.includes(messagePackage.author.id)) {
-    text = `Notification from watched user: ${messagePackage.author.username}#${messagePackage.author.discriminator} (${messagePackage.author.id})`;
+  } else if (notifyUsers.includes(messagePackage.author?.id)) {
+    text = `Notification from watched user: ${messagePackage.author?.username}#${messagePackage.author?.discriminator} (${messagePackage.author?.id})`;
   } else {
     text = `Notification from watched keyword: ${getActivationKeyword(
       messagePackage,

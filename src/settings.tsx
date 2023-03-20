@@ -182,6 +182,9 @@ export default (): React.ReactElement => {
         <SwitchItem {...simpleNotation} note="When disabled you must use JSON notation">
           Use a comma to separate the items you want to notify or suppress instead of JSON notation
         </SwitchItem>
+        <SwitchItem {...statusOverride} note="Notify me even if I am in DND">
+          Status override
+        </SwitchItem>
         <SwitchItem
           {...method}
           note="If any part of the word is in a message - for example `kat` would trigger if someone said
@@ -213,9 +216,6 @@ export default (): React.ReactElement => {
         </SwitchItem>
         <SwitchItem {...managedChannels} note="managedChannels">
           managedChannels
-        </SwitchItem>
-        <SwitchItem {...statusOverride} note="Notify me even if I am in DND">
-          Status override
         </SwitchItem>
       </Category>
     </>

@@ -5,9 +5,7 @@
 // const isMutedModule = (await webpack.waitForModule(
 //   webpack.filters.byProps("isMuted", "hasJoined"),
 // )) as unknown as isMutedModuleInterface;
-// const getStatusModule = (await webpack.waitForModule(
-//   webpack.filters.byProps("getStatus", "getActivities"),
-// )) as unknown as getStatusModuleInterface;
+
 // const userSettingsModule = (await webpack.waitForModule(
 //   webpack.filters.byProps(
 //     "allowAllMessages",
