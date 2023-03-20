@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { types } from "replugged";
+import type { Jsonifiable } from "type-fest";
 export interface messageObj {
   activity?: unknown;
   application?: unknown;
@@ -105,30 +106,30 @@ export interface attachment {
   url: string;
   width: number;
 }
-export interface settingsInterface {
-  notifyGuilds?: string;
-  notifyChannels?: string;
-  notifyUsers?: string;
-  notifyKeywords?: string;
+export interface settingsInterface extends Record<string, Jsonifiable> {
+  notifyGuilds: string;
+  notifyChannels: string;
+  notifyUsers: string;
+  notifyKeywords: string;
 
-  suppressGuilds?: string;
-  suppressChannels?: string;
-  suppressUsers?: string;
-  suppressKeywords?: string;
+  suppressGuilds: string;
+  suppressChannels: string;
+  suppressUsers: string;
+  suppressKeywords: string;
 
-  statusOverride?: boolean;
+  statusOverride: boolean;
 
-  method?: boolean;
-  caseSensitive?: boolean;
+  method: boolean;
+  caseSensitive: boolean;
 
-  mentionEveryone?: boolean;
-  mentionRoles?: boolean;
+  mentionEveryone: boolean;
+  mentionRoles: boolean;
 
-  highlightKeywords?: boolean;
-  lurkedGuilds?: boolean;
-  managedChannels?: boolean;
-  simpleNotation?: boolean;
-  settingsCheck?: settingsCheck;
+  highlightKeywords: boolean;
+  lurkedGuilds: boolean;
+  managedChannels: boolean;
+  simpleNotation: boolean;
+  settingsCheck: { passed: boolean; message: string };
 }
 export interface settingsCheck {
   passed: boolean;
