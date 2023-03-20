@@ -106,7 +106,7 @@ export interface attachment {
   url: string;
   width: number;
 }
-export interface settingsInterface extends Record<string, Jsonifiable> {
+export interface settingsInterface {
   notifyGuilds?: string;
   notifyChannels?: string;
   notifyUsers?: string;
