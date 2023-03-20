@@ -81,7 +81,7 @@ const defaultSettings: Partial<settingsInterface> = {
   settingsCheck: { passed: true, message: "default init" },
 };
 
-const cfg = await settings.init<settingsInterface>("dev.Dapal.NotifyMe");
+const cfg = await settings.init("dev.Dapal.NotifyMe"); //<settingsInterface>
 
 //cfg.delete("settingsCheck");
 

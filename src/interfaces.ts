@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { types } from "replugged";
-import type { Jsonifiable } from "type-fest";
 export interface messageObj {
   activity?: unknown;
   application?: unknown;
